@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+    <title>COUNTRY</title>
+    <style>
+        body {
+            background-color: rgb(61, 12, 8);
+        }
+        h1 {
+            color: blue;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body onload="getByCountry()">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="text-center">
+                    <h1>COUNTRY DETAILS</h1>
+                    <!-- <input type="text" id="c_name" class="form-control">
+                <label for="Country">Choose a country</label> -->
+                    <div class="text-center">
+                        <select id="cn_name" name="country">
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-danger" onclick="getCountryDetails()">Fetch Data</button>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4" id="data"></div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+</body>
+<script>
+    function getByCountry() {
+        let url = `https://restcountries.eu/rest/v2/all`
+        let request = new XMLHttpRequest()
+        request.open("get", url)
+        request.send()
+        request.onreadystatechange = () => {
+            if (request.readyState == 4) {
+                if (request.status > 199 && request.status < 300) {
+                    let country_data = JSON.parse(request.responseText)
+                    getCountries(country_data)
+                }
+            }
+        }
+    }
+    function getCountries(country_data) {
+        let html_data = ""
+        for (let datas of country_data) {
+            html_data += `<option value="${datas.name}">${datas.name}</option>`
+
+        }
+        cn_name.innerHTML = html_data
+
+    }
+    function displayValue(country_data) {
+        // flag
+        //country name
+        //population
+        //currency name
+        //symbol
+        let flag = country_data[0].flag;
+        let population = country_data[0].population
+        let currency = country_data[0].currencies[0].name;
+        let currency_symbol = country_data[0].currencies[0].symbol;
+
+        let html_data = `<div class="card" style="width: 18rem;">
+  <img src="${flag}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Country Name : ${country_data[0].name}</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Population : ${population}</li>
+    <li class="list-group-item">Currency : ${currency}</li>
+    <li class="list-group-item">Currency Symbol : ${currency_symbol}</li>
+  </ul>
+  
+</div>`
+        data.innerHTML = html_data;
+    }
+
+    function getCountryDetails() {
+        let country_name = cn_name.value;
+        let url = `https://restcountries.eu/rest/v2/name/${country_name}?fullText=true`
+        let request = new XMLHttpRequest()
+        request.open("get", url)
+        request.send();
+        request.onreadystatechange = () => {
+            if (request.readyState == 4) {
+                if (request.status > 199 && request.status < 300) {
+                    let country_data = JSON.parse(request.responseText)
+                    console.log(country_data);
+                    displayValue(country_data)
+                }
+            }
+
+        }
+    }
+//fetch(`https://restcountries.eu/rest/v2/name/${country_name}?fullText=true`).
+//then(country=>country.json()).
+//then(data=>)console.log));
+
+</script>
+</html>
